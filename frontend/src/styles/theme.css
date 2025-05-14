@@ -1,0 +1,14 @@
+:root {
+  --flexitec-primary: #006D77;
+  --flexitec-accent: #EDF6F9;
+  --flexitec-light: #CDEAE4;
+  --flexitec-warn: #FFDDD2;
+  --flexitec-text-dark: #333;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--flexitec-accent);
+  color: var(--flexitec-text-dark);
+}

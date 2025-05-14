@@ -1,0 +1,92 @@
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #EDF6F9;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.dashboard-container {
+  display: flex;
+  flex: 1;
+  margin-top: 1rem; /* gap between header and sidebar */
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #006D77;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+}
+
+.sidebar-logo {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+.sidebar-menu li:hover {
+  text-decoration: underline;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 2rem 3rem;
+}
+
+.card-box {
+  background-color: white;
+  padding: 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  margin-top: 1rem;
+  width: 320px;
+}
+
+.card-box h3 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.card-balance {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #006D77;
+}
+
+.card-status {
+  margin-top: 0.5rem;
+  color: #888;
+}
+
+
+/* NEW - wrap the whole layout in 100vw with no overflow */
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;              /* ✅ Ensures no horizontal overflow */
+  overflow-x: hidden;        /* ✅ Prevents horizontal scroll */
+  background-color: #EDF6F9;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.dashboard-container {
+  display: flex;
+  flex: 1;
+  margin-top: 1rem;
+  overflow-x: hidden;        /* ✅ Safety net */
+}
+
