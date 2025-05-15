@@ -1,9 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const { googleLoginURL, googleOAuthCallback } = require('../controllers/authController');
+const { googleLoginURL, googleOAuthCallback, login } = require('../controllers/authController');
+const { body } = require('express-validator');
+const { validateLoginInput } = require('../middleware/validationMiddleware');
 
-router.get('/google', googleLoginURL); // Step 1: Redirect to Google
-router.get('/oauth/callback', googleOAuthCallback); // Step 2: Handle Google's response
+// 🔐 Email/password login with input validation
+router.post(
+  '/login',
+  [
+    body('email').isEmail().withMessage('Email must be valid'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+  ],
+  validateLoginInput,
+  login
+);
+
+// 🔐 Google OAuth login
+router.get('/google', googleLoginURL);
+router.get('/oauth/callback', googleOAuthCallback);
 
 module.exports = router;
 

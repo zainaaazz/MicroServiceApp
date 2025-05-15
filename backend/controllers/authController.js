@@ -2,6 +2,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const { poolPromise } = require('../config/db');
 const querystring = require('querystring');
+const bcrypt = require('bcryptjs');
 
 exports.googleLoginURL = (req, res) => {
   const baseURL = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -56,7 +57,7 @@ exports.googleOAuthCallback = async (req, res) => {
     let user;
 
     if (result.recordset.length === 0) {
-      // Optional: Auto-register new users (for dev/testing only)
+      // Auto-register user
       console.log(`Auto-registering new user: ${email}`);
 
       await pool.request()
@@ -68,13 +69,12 @@ exports.googleOAuthCallback = async (req, res) => {
         .input('zip_code', '0000')
         .input('join_date', new Date())
         .input('is_active', 1)
-        .input('role_id', 1) // Default: Customer
+        .input('role_id', 1)
         .query(`
           INSERT INTO tblUsers (full_name, email, phone_number, city, province, zip_code, join_date, is_active, role_id)
           VALUES (@full_name, @email, @phone_number, @city, @province, @zip_code, @join_date, @is_active, @role_id)
         `);
 
-      // Re-query user
       result = await pool.request()
         .input('email', email)
         .query('SELECT user_id, role_id, is_active FROM tblUsers WHERE email = @email');
@@ -93,11 +93,49 @@ exports.googleOAuthCallback = async (req, res) => {
       { expiresIn: '2h' }
     );
 
-    // 5. Return the token
     res.json({ token });
 
   } catch (err) {
-    console.error('OAuth error (full):', err); // More useful than just err.message
+    console.error('OAuth error (full):', err);
     res.status(500).send('OAuth login failed');
   }
 };
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+      .input('email', email.toLowerCase()) // ensure lowercase comparison
+      .query('SELECT * FROM tblUsers WHERE LOWER(email) = @email');
+
+    const user = result.recordset[0];
+
+    if (!user) {
+      return res.status(401).json({ error: 'Email not found or inactive user.' });
+    }
+
+    if (!user.is_active) {
+      return res.status(403).json({ error: 'User is inactive.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.hashed_password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Incorrect password.' });
+    }
+
+    const token = jwt.sign(
+      { user_id: user.user_id, role_id: user.role_id },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+
+    res.json({ token });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
