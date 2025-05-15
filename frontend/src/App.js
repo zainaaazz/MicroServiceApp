@@ -5,12 +5,16 @@ import AdminDashboard from './pages/AdminDashboard';
 import UserCards from './pages/UserCards';
 import UserProfile from './pages/UserProfile';
 import { UserProvider } from './context/UserContext'; // <-- Import your context
+import Login from './pages/Login'; 
 
 function App() {
   return (
     <UserProvider>
       <Router>
         <Routes>
+
+          <Route path="/login" element={<Login />} />
+
           {/* Redirect route example (optional):
           <Route path="/" element={<Navigate to="/user/dashboard" replace />} />
           */}

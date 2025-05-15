@@ -1,0 +1,86 @@
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #EDF6F9;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.login-form {
+  background-color: white;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  width: 360px;
+}
+
+.login-form h2 {
+  text-align: center;
+  color: #006D77;
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.input-icon {
+  display: flex;
+  align-items: center;
+  background: #f0f0f0;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.input-icon svg {
+  margin-right: 0.5rem;
+  color: #888;
+}
+
+.input-icon input {
+  border: none;
+  outline: none;
+  flex: 1;
+  background: transparent;
+  font-size: 1rem;
+}
+
+.login-button {
+  background-color: #006D77;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: #045E66;
+}
+
+.oauth-section {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.google-login {
+  margin-top: 0.5rem;
+  background-color: #DB4437;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
