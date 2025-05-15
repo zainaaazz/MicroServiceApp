@@ -4,6 +4,8 @@ const { poolPromise } = require('../config/db');
 const querystring = require('querystring');
 const bcrypt = require('bcryptjs');
 const logger = require('../utils/logger'); // Winston logger
+const securityLogger = require('../utils/securityLogger');
+
 
 // 🔐 Redirect to Google OAuth
 exports.googleLoginURL = (req, res) => {
@@ -101,9 +103,17 @@ exports.googleOAuthCallback = async (req, res) => {
   }
 };
 
+
+// In-memory map: email => { count, lastAttempt }
+    const failedLoginMap = new Map();
+    const MAX_ATTEMPTS = 5;
+    const WINDOW_MS = 15 * 60 * 1000; // 15 min
+
+
 // 🔐 Email & password login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+
 
   try {
     const pool = await poolPromise;
@@ -124,6 +134,33 @@ exports.login = async (req, res) => {
       return res.status(403).json({ error: 'User is inactive.' });
     }
 
+    // Track attempts
+    let attempt = failedLoginMap.get(email) || { count: 0, lastAttempt: null };
+
+    const now = Date.now();
+    if (attempt.lastAttempt && (now - attempt.lastAttempt) < WINDOW_MS) {
+    attempt.count += 1;
+    } else {
+    attempt.count = 1;
+    }
+    attempt.lastAttempt = now;
+
+    failedLoginMap.set(email, attempt);
+
+    // Lock after too many attempts
+    if (attempt.count >= MAX_ATTEMPTS) {
+    securityLogger.warn(`Brute force attempt blocked for email: ${email}`, {
+        ip: req.ip,
+        attempts: attempt.count,
+        time: new Date().toISOString()
+    });
+
+    return res.status(429).json({
+        error: 'Too many failed attempts. Please try again later.'
+    });
+    }
+
+    
     const isMatch = await bcrypt.compare(password, user.hashed_password);
     if (!isMatch) {
       logger.warn(`Incorrect password attempt for user_id: ${user.user_id}`);
@@ -138,6 +175,8 @@ exports.login = async (req, res) => {
 
     logger.info(`Login successful for user_id: ${user.user_id}`);
     res.json({ token });
+    failedLoginMap.delete(email); // ✅ Clear brute force counter
+
 
   } catch (err) {
     logger.error('Login error', { message: err.message, stack: err.stack });
