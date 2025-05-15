@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import { UserProvider } from './context/UserContext';
 
@@ -8,12 +8,15 @@ import Header       from './components/common/Header';
 import Sidebar      from './components/common/Sidebar';
 import PrivateRoute from './components/common/PrivateRoute';
 
-import OAuthRedirect    from './pages/OAuthRedirect';
-import Login            from './pages/Login';
-import UserDashboard    from './pages/UserDashboard';
-import UserCards        from './pages/UserCards';
-import UserProfile      from './pages/UserProfile';
-import AdminDashboard   from './pages/AdminDashboard';
+import Login        from './pages/Login';
+import OAuthRedirect from './pages/OAuthRedirect';
+
+import UserDashboard  from './pages/UserDashboard';
+import UserCards      from './pages/UserCards';
+import UserProfile    from './pages/UserProfile';
+
+import AdminUsers     from './pages/AdminUsers';
+import AdminCards     from './pages/AdminCards';
 
 function App() {
   return (
@@ -25,13 +28,11 @@ function App() {
           <main className="main-content">
             <Routes>
 
-              {/* OAuth redirect handler (no sidebar) */}
+              {/* OAuth & login */}
               <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
-
-              {/* Login page */}
               <Route path="/login" element={<Login />} />
 
-              {/* Protected user routes */}
+              {/* User routes */}
               <Route
                 path="/user/dashboard"
                 element={<PrivateRoute><UserDashboard/></PrivateRoute>}
@@ -45,10 +46,18 @@ function App() {
                 element={<PrivateRoute><UserProfile/></PrivateRoute>}
               />
 
-              {/* Protected admin */}
+              {/* Admin routes */}
               <Route
                 path="/admin"
-                element={<PrivateRoute><AdminDashboard/></PrivateRoute>}
+                element={<Navigate to="/admin/users" replace />}
+              />
+              <Route
+                path="/admin/users"
+                element={<PrivateRoute><AdminUsers/></PrivateRoute>}
+              />
+              <Route
+                path="/admin/cards"
+                element={<PrivateRoute><AdminCards/></PrivateRoute>}
               />
 
             </Routes>
