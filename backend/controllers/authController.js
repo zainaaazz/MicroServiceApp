@@ -3,7 +3,9 @@ const jwt = require('jsonwebtoken');
 const { poolPromise } = require('../config/db');
 const querystring = require('querystring');
 const bcrypt = require('bcryptjs');
+const logger = require('../utils/logger'); // Winston logger
 
+// 🔐 Redirect to Google OAuth
 exports.googleLoginURL = (req, res) => {
   const baseURL = 'https://accounts.google.com/o/oauth2/v2/auth';
   const options = {
@@ -19,11 +21,11 @@ exports.googleLoginURL = (req, res) => {
   res.redirect(authURL);
 };
 
+// 🔐 Handle Google OAuth callback
 exports.googleOAuthCallback = async (req, res) => {
   const code = req.query.code;
 
   try {
-    // 1. Exchange code for access token
     const { data: tokenData } = await axios.post(
       'https://oauth2.googleapis.com/token',
       {
@@ -38,7 +40,6 @@ exports.googleOAuthCallback = async (req, res) => {
 
     const access_token = tokenData.access_token;
 
-    // 2. Get user info from Google
     const { data: googleUser } = await axios.get(
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
       { headers: { Authorization: `Bearer ${access_token}` } }
@@ -49,7 +50,6 @@ exports.googleOAuthCallback = async (req, res) => {
 
     const pool = await poolPromise;
 
-    // 3. Check if user exists
     let result = await pool.request()
       .input('email', email)
       .query('SELECT user_id, role_id, is_active FROM tblUsers WHERE email = @email');
@@ -57,8 +57,7 @@ exports.googleOAuthCallback = async (req, res) => {
     let user;
 
     if (result.recordset.length === 0) {
-      // Auto-register user
-      console.log(`Auto-registering new user: ${email}`);
+      logger.info(`Auto-registering new user: ${email}`);
 
       await pool.request()
         .input('full_name', name)
@@ -83,24 +82,26 @@ exports.googleOAuthCallback = async (req, res) => {
     user = result.recordset[0];
 
     if (!user.is_active) {
+      logger.warn(`Inactive Google user login attempt: ${email}`);
       return res.status(403).json({ error: 'User account is inactive' });
     }
 
-    // 4. Generate JWT token
     const token = jwt.sign(
       { user_id: user.user_id, role_id: user.role_id },
       process.env.JWT_SECRET,
       { expiresIn: '2h' }
     );
 
+    logger.info(`Google login successful for user_id: ${user.user_id}`);
     res.json({ token });
 
   } catch (err) {
-    console.error('OAuth error (full):', err);
+    logger.error('Google OAuth callback error', { message: err.message, stack: err.stack });
     res.status(500).send('OAuth login failed');
   }
 };
 
+// 🔐 Email & password login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -108,21 +109,24 @@ exports.login = async (req, res) => {
     const pool = await poolPromise;
 
     const result = await pool.request()
-      .input('email', email.toLowerCase()) // ensure lowercase comparison
+      .input('email', email.toLowerCase())
       .query('SELECT * FROM tblUsers WHERE LOWER(email) = @email');
 
     const user = result.recordset[0];
 
     if (!user) {
+      logger.warn(`Login attempt with unregistered email: ${email}`);
       return res.status(401).json({ error: 'Email not found or inactive user.' });
     }
 
     if (!user.is_active) {
+      logger.warn(`Inactive user login attempt: user_id=${user.user_id}`);
       return res.status(403).json({ error: 'User is inactive.' });
     }
 
     const isMatch = await bcrypt.compare(password, user.hashed_password);
     if (!isMatch) {
+      logger.warn(`Incorrect password attempt for user_id: ${user.user_id}`);
       return res.status(401).json({ error: 'Incorrect password.' });
     }
 
@@ -132,10 +136,11 @@ exports.login = async (req, res) => {
       { expiresIn: '2h' }
     );
 
+    logger.info(`Login successful for user_id: ${user.user_id}`);
     res.json({ token });
+
   } catch (err) {
-    console.error('Login error:', err);
+    logger.error('Login error', { message: err.message, stack: err.stack });
     res.status(500).json({ error: 'Server error' });
   }
 };
-
