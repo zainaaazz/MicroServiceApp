@@ -1,3 +1,4 @@
+// backend/swagger/swaggerConfig.js
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
@@ -7,6 +8,7 @@ const options = {
     info: {
       title: 'Flexitec Banking API',
       version: '1.0.0',
+      description: 'This API allows customers and bank staff to interact with the Flexitec banking system securely.',
     },
     components: {
       securitySchemes: {
@@ -14,18 +16,23 @@ const options = {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: 'JWT',
+          description: 'Enter JWT token in the format: Bearer <token>',
         }
       }
     },
-    security: [{ bearerAuth: [] }],
+    security: [
+      {
+        bearerAuth: []
+      }
+    ],
   },
-  apis: ['./routes/*.js'], // Scan all route files
+  // 🔎 These are the folders Swagger will scan for route annotations
+  apis: ['./routes/*.js', './controllers/*.js'], 
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
-function setupSwagger(app) {
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-}
-
-module.exports = setupSwagger;
+module.exports = {
+  swaggerSpec,
+  swaggerUi,
+};
