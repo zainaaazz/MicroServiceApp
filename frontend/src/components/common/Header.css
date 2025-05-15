@@ -1,12 +1,15 @@
 .header {
-  background-color: #006D77;
-  color: white;
-  padding: 1rem 2rem;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  padding: 1rem 2rem;
+  background-color: #006D77;
+  color: white;
+  box-sizing: border-box;  /* ✅ Ensures padding doesn't overflow */
+  height: 75px;
 }
+
 
 
 .logo {

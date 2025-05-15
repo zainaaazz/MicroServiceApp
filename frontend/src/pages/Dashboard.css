@@ -2,15 +2,36 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;   /* ✅ Prevents side scrolling */
   background-color: #EDF6F9;
   font-family: 'Segoe UI', sans-serif;
 }
 
+
+
+.dashboard-main {
+  flex: 1;
+  padding: 2rem 3rem;
+  padding-top: 1.5rem; /* 🆕 reduce top padding */
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.dashboard-main h2 {
+  color: #333;
+}
+
+
+
 .dashboard-container {
   display: flex;
   flex: 1;
-  margin-top: 1rem; /* gap between header and sidebar */
+  margin-top: 1rem;
+  overflow-x: hidden;
+  width: 100%;
 }
+
 
 .sidebar {
   width: 220px;
@@ -33,7 +54,7 @@
 }
 
 .sidebar-menu li {
-  margin: 1rem 0;
+  margin: 0.7rem 0;
   cursor: pointer;
 }
 
@@ -41,16 +62,13 @@
   text-decoration: underline;
 }
 
-.dashboard-main {
-  flex: 1;
-  padding: 2rem 3rem;
-}
+
 
 .card-box {
   background-color: white;
   padding: 2rem;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  margin-top: 1rem;
+  margin-top: 0rem;
   width: 320px;
 }
 
@@ -71,22 +89,4 @@
   color: #888;
 }
 
-
-/* NEW - wrap the whole layout in 100vw with no overflow */
-.dashboard-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;              /* ✅ Ensures no horizontal overflow */
-  overflow-x: hidden;        /* ✅ Prevents horizontal scroll */
-  background-color: #EDF6F9;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.dashboard-container {
-  display: flex;
-  flex: 1;
-  margin-top: 1rem;
-  overflow-x: hidden;        /* ✅ Safety net */
-}
 

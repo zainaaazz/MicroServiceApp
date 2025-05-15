@@ -1,13 +1,18 @@
+
 import React from 'react';
 import './Header.css';
+import { useUser } from '../../context/UserContext';
 
-function Header({ name }) {
+const Header = () => {
+  const { userName } = useUser();
+
   return (
     <header className="header">
-      <div className="logo">Flexitec</div>
-      <div className="user">Welcome, {name}</div>
+      <h1>Flexitec Bank</h1>
+      <span className="welcome">Welcome, {userName}</span>
     </header>
   );
-}
+};
 
 export default Header;
+
