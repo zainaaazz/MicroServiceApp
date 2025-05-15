@@ -1,23 +1,57 @@
-import React from 'react';
-import Header from '../components/common/Header';
-import Sidebar from '../components/common/Sidebar';
-import './Dashboard.css';
+// src/pages/UserDashboard.js
+import React, { useEffect, useState } from 'react';
+import { useUser } from '../context/UserContext';
+import '../styles/Dashboard.css';
+
+const API = process.env.REACT_APP_API_URL;
 
 const UserDashboard = () => {
+  const { token, user } = useUser();
+  const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState('');
+
+  useEffect(() => {
+    if (!token) {
+      setErr('Not logged in');
+      setLoading(false);
+      return;
+    }
+
+    const fetchBalance = async () => {
+      try {
+        const res = await fetch(`${API}/api/cards/my-cards`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('Could not load cards');
+        const cards = await res.json();
+
+        // Sum up the DB's current_balance field
+        const total = cards.reduce((sum, c) => {
+          const num = Number(c.current_balance);
+          return sum + (isNaN(num) ? 0 : num);
+        }, 0);
+
+        setBalance(total);
+      } catch (e) {
+        setErr(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBalance();
+  }, [token]);
+
+  if (loading) return <p>Loading…</p>;
+  if (err)     return <p>Error: {err}</p>;
+
   return (
-    <div className="dashboard-wrapper">
-      <Header name="Zainaaz" />
-      <div className="dashboard-container">
-        <Sidebar />
-        <div className="dashboard-main">
-          <h2>User Dashboard</h2>
-          <div className="card-box">
-            <h3>My Card Balance</h3>
-            <p className="card-balance">R8,100.00</p>
-            <p className="card-status">Status: Active</p>
-          </div>
-        </div>
-      </div>
+    <div className="dashboard">
+      <h2>Welcome back, {user.name}!</h2>
+      <p>
+        Your total balance is <strong>R{balance.toFixed(2)}</strong>
+      </p>
     </div>
   );
 };

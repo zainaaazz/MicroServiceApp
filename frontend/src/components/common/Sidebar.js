@@ -1,51 +1,25 @@
+// src/components/common/Sidebar.js
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import './Sidebar.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCreditCard, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
+  const { pathname } = useLocation();
+  // Hide on login & OAuth redirect
+  if (pathname === '/login' || pathname === '/oauth2/redirect') {
+    return null;
+  }
+
   return (
-    <div className="sidebar">
-      <ul className="sidebar-menu">
-        <li>
-
-          <NavLink
-                to="/user/dashboard"
-                className={({ isActive }) =>
-                    isActive ? "nav-link active" : "nav-link"
-                }
-                >
-                <FontAwesomeIcon icon={faHome} /> Dashboard
-            </NavLink>
-
-        </li>
-        <li>
-
-       <NavLink
-            to="/user/cards"
-            className={({ isActive }) =>
-                isActive ? "nav-link active" : "nav-link"
-            }
-            >
-            <FontAwesomeIcon icon={faCreditCard} /> My Cards
-        </NavLink>
-
-        </li>
-        <li>
-
-            <NavLink
-                to="/user/profile"
-                className={({ isActive }) =>
-                    isActive ? "nav-link active" : "nav-link"
-                }
-                >
-                <FontAwesomeIcon icon={faUser} /> Profile
-            </NavLink>
-
-        </li>
-      </ul>
-    </div>
+    <aside className="sidebar">
+      <nav>
+        <ul>
+          <li><NavLink to="/user/dashboard">Dashboard</NavLink></li>
+          <li><NavLink to="/user/cards">My Cards</NavLink></li>
+          <li><NavLink to="/user/profile">Profile</NavLink></li>
+        </ul>
+      </nav>
+    </aside>
   );
 };
 

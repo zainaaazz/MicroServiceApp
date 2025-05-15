@@ -1,0 +1,17 @@
+/* AdminDashboard page */
+.admin-page {
+  padding: 1rem;
+}
+.admin-page h2 {
+  margin-bottom: 1rem;
+}
+.admin-page section {
+  margin-bottom: 2rem;
+}
+.admin-page ul {
+  list-style: none;
+  padding: 0;
+}
+.admin-page li {
+  margin: 0.5rem 0;
+}

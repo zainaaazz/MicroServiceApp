@@ -1,0 +1,10 @@
+/* UserDashboard page */
+.dashboard {
+  padding: 1rem;
+}
+.dashboard h2 {
+  margin-bottom: 0.5rem;
+}
+.dashboard p {
+  font-size: 1.2rem;
+}

@@ -1,0 +1,97 @@
+/* src/styles/Profile.css */
+
+.profile-page {
+  padding: 1rem;
+  max-width: 600px;
+}
+
+.profile-page h2 {
+  margin-bottom: 1rem;
+}
+
+/* Message banner */
+.profile-page .message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #e1f5e1;
+  color: #2e7d32;
+  border-radius: 4px;
+}
+
+/* --- View mode --- */
+.profile-view .profile-field {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+
+.profile-view .field-label {
+  width: 120px;
+  font-weight: 600;
+  color: #333;
+}
+
+.profile-view .field-value {
+  flex: 1;
+  color: #555;
+}
+
+.profile-view .edit-btn {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #006d6d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.profile-view .edit-btn:hover {
+  opacity: 0.9;
+}
+
+/* --- Edit mode --- */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-form .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.profile-form .form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.profile-form .form-group input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Buttons row */
+.profile-buttons {
+  display: flex;
+  gap: 1rem;
+}
+.profile-buttons .btn {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.profile-buttons .save-btn {
+  background-color: #006d6d;
+  color: #fff;
+}
+.profile-buttons .cancel-btn {
+  background-color: #ccc;
+  color: #333;
+}
+.profile-buttons .btn:hover {
+  opacity: 0.9;
+}

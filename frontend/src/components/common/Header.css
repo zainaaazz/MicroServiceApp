@@ -21,3 +21,29 @@
   font-size: 1rem;
   font-weight: 500;
 }
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+
+.header-right span {
+  margin-right: 1rem;
+  font-weight: 500;
+}
+
+.header-right button {
+  background-color: #c92a2a;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.header-right button:hover {
+  opacity: 0.9;
+}
+
+

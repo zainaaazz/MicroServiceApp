@@ -1,86 +1,67 @@
-.login-wrapper {
+/* src/styles/Login.css */
+
+.login-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #EDF6F9;
-  height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
+  /* fill viewport minus header height (assumes header ~60px) */
+  min-height: calc(100vh - 60px);
+  background-color: #f0f6f8;
 }
 
 .login-form {
-  background-color: white;
-  padding: 2.5rem 3rem;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  width: 360px;
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .login-form h2 {
   text-align: center;
-  color: #006D77;
-  margin-bottom: 2rem;
-}
-
-.input-group {
   margin-bottom: 1.5rem;
+  color: #006d6d;
 }
 
-.input-group label {
-  display: block;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #333;
 }
 
-.input-icon {
-  display: flex;
-  align-items: center;
-  background: #f0f0f0;
-  border-radius: 6px;
+.form-group input {
   padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.input-icon svg {
-  margin-right: 0.5rem;
-  color: #888;
-}
-
-.input-icon input {
-  border: none;
-  outline: none;
-  flex: 1;
-  background: transparent;
-  font-size: 1rem;
-}
-
-.login-button {
-  background-color: #006D77;
-  color: white;
-  border: none;
-  width: 100%;
-  padding: 0.8rem;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.login-button:hover {
-  background-color: #045E66;
-}
-
-.oauth-section {
+.error {
+  margin-bottom: 1rem;
+  color: #c92a2a;
   text-align: center;
-  margin-top: 1.5rem;
 }
 
-.google-login {
+.btn {
   margin-top: 0.5rem;
-  background-color: #DB4437;
-  color: white;
+  padding: 0.75rem;
+  background-color: #006d6d;
+  color: #fff;
   border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
+}
+
+.google-btn {
+  background-color: #db4437;
+}
+
+.btn:hover {
+  opacity: 0.9;
 }

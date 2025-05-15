@@ -1,0 +1,35 @@
+/* src/styles/Cards.css */
+
+.cards-page {
+  padding: 1rem;
+}
+.cards-page h2 {
+  margin-bottom: 1rem;
+}
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+/* Card styling with a more pronounced shadow + hover */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  /* stronger default shadow */
+  box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* lift on hover */
+.card:hover {
+  box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+  margin: 0 0 0.5rem;
+}
+.card p {
+  margin: 0.25rem 0;
+}
