@@ -1,6 +1,7 @@
 // controllers/cardController.js
 const { poolPromise } = require('../config/db');
 const logger          = require('../utils/logger');
+const { sendCardStatusEmail } = require('../services/emailService');
 
 exports.getMyCards = async (req, res) => {
   try {
@@ -75,13 +76,42 @@ exports.getCardById = async (req, res) => {
 
 exports.updateCardStatus = async (req, res) => {
   const { status } = req.body;
+  const cardId     = req.params.id;
   try {
     const pool = await poolPromise;
     await pool.request()
       .input('card_id', req.params.id)
       .input('card_status', status)
       .query('UPDATE tblCards SET card_status = @card_status WHERE card_id = @card_id');
-    res.json({ message: 'Card status updated' });
+    
+      // 2) fetch the user’s email, full_name, and card_number
+
+      const info = await pool.request()
+     .input('card_id', cardId)
+     .query(`
+       SELECT u.email,
+              u.full_name,
+              c.card_number
+       FROM tblCards c
+       JOIN tblUsers  u ON c.user_id = u.user_id
+       WHERE c.card_id = @card_id
+     `);
+
+   if (info.recordset.length) {
+     const { email, full_name, card_number } = info.recordset[0];
+     // 3) send the notification email (fire-and-forget)
+     sendCardStatusEmail({
+       to:        email,
+       fullName:  full_name,
+       cardNum:   card_number,
+       newStatus: status
+     }).catch(err => {
+       logger.error('Email send failure', err);
+     });
+   }
+    
+      logger.info(`Card ${cardId} status set to ${status}`);
+      res.json({ message: 'Card status updated' });
   } catch (err) {
     logger.error('updateCardStatus error', err);
     res.status(500).json({ error: 'Server error' });

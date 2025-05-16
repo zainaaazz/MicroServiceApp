@@ -1,6 +1,7 @@
 // src/pages/UserDashboard.js
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
+import CardBalancePieChart from '../components/common/CardBalancePieChart';
 import '../styles/Dashboard.css';
 
 const API = process.env.REACT_APP_API_URL;
@@ -8,8 +9,9 @@ const API = process.env.REACT_APP_API_URL;
 const UserDashboard = () => {
   const { token, user } = useUser();
   const [balance, setBalance] = useState(0);
+  const [cards, setCards]     = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState('');
+  const [err, setErr]         = useState('');
 
   useEffect(() => {
     if (!token) {
@@ -18,7 +20,7 @@ const UserDashboard = () => {
       return;
     }
 
-    const fetchBalance = async () => {
+    const fetchCards = async () => {
       try {
         const res = await fetch(`${API}/api/cards/my-cards`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -33,6 +35,7 @@ const UserDashboard = () => {
         }, 0);
 
         setBalance(total);
+        setCards(cards);  // <-- use the fetched cards array here
       } catch (e) {
         setErr(e.message);
       } finally {
@@ -40,7 +43,7 @@ const UserDashboard = () => {
       }
     };
 
-    fetchBalance();
+    fetchCards();
   }, [token]);
 
   if (loading) return <p>Loading…</p>;
@@ -49,9 +52,10 @@ const UserDashboard = () => {
   return (
     <div className="dashboard">
       <h2>Welcome back, {user.name}!</h2>
-      <p>
-        Your total balance is <strong>R{balance.toFixed(2)}</strong>
-      </p>
+      <p>Your total balance is <strong>R{balance.toFixed(2)}</strong></p>
+
+      <h3>Breakdown by Card</h3>
+      <CardBalancePieChart cards={cards} />
     </div>
   );
 };
