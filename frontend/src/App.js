@@ -17,6 +17,9 @@ import UserProfile    from './pages/UserProfile';
 
 import AdminUsers     from './pages/AdminUsers';
 import AdminCards     from './pages/AdminCards';
+import AdminLogs     from './pages/AdminLogs';
+import AdminProfile  from './pages/AdminProfile';
+
 
 function App() {
   return (
@@ -44,6 +47,19 @@ function App() {
               <Route
                 path="/user/profile"
                 element={<PrivateRoute><UserProfile/></PrivateRoute>}
+              />
+
+             
+             {/* Admin profile */}
+              <Route
+                path="/admin/profile"
+                element={<PrivateRoute><AdminProfile/></PrivateRoute>}
+              />
+               
+              {/* Admin logs */}
+              <Route
+                path="/admin/logs"
+                element={<PrivateRoute><AdminLogs/></PrivateRoute>}
               />
 
               {/* Admin routes */}

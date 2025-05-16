@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const cardRoutes = require('./routes/cardRoutes');
+const logRoutes  = require('./routes/logRoutes');
 
 // Middleware
 const apiGateway = require('./middleware/apiGateway');
@@ -30,6 +31,9 @@ app.use('/api', apiGateway);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cards', cardRoutes);
+
+
+app.use('/api', logRoutes);
 
 // 📘 Swagger docs UI
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

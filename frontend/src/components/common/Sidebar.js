@@ -1,13 +1,14 @@
 // src/components/common/Sidebar.js
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useUser } from '../../context/UserContext';
+import { useUser }              from '../../context/UserContext';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const { pathname } = useLocation();
   const { user }     = useUser();
 
+  // hide sidebar on login / oauth redirect pages
   if (pathname === '/login' || pathname === '/oauth2/redirect') {
     return null;
   }
@@ -38,7 +39,15 @@ const Sidebar = () => {
               </li>
               <li>
                 <NavLink
-                  to="/user/profile"
+                  to="/admin/logs"
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  Activity Logs
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/profile"
                   className={({ isActive }) => (isActive ? 'active' : '')}
                 >
                   Admin Profile

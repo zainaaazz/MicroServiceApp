@@ -84,3 +84,25 @@
 .error {
   color: #c92a2a;
 }
+
+
+/* Activity logs table */
+.admin-page .filter-row {
+  margin-bottom: 1rem;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-table th,
+.admin-table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+}
+.admin-table th {
+  background: #f5f5f5;
+  text-align: left;
+}
+.error {
+  color: red;
+}
