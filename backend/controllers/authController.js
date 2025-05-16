@@ -106,7 +106,58 @@ exports.googleOAuthCallback = async (req, res) => {
 };
 
 
-// 🔐 Email & password login (unchanged)
+// 🔐 Email & password login 
 exports.login = async (req, res) => {
-  // ... your existing login code unchanged ...
+  const { email, password } = req.body;
+
+  try {
+    const pool = await poolPromise;
+    // 1) look up user by email
+    const result = await pool.request()
+      .input('email', email)
+      .query(`
+        SELECT user_id, full_name, hashed_password, role_id, is_active
+        FROM tblUsers
+        WHERE email = @email
+      `);
+
+    if (result.recordset.length === 0) {
+      // unregistered email
+      securityLogger.warn(`Unregistered email login attempt: ${email}`, {
+        ip: req.ip,
+      });
+      return res.status(401).json({ error: 'Incorrect email or password' });
+    }
+
+    const user = result.recordset[0];
+
+    // 2) check active
+    if (!user.is_active) {
+      logger.warn(`Inactive account login attempt for user_id ${user.user_id}`);
+      return res.status(403).json({ error: 'User account is inactive' });
+    }
+
+    // 3) check password
+    const match = await bcrypt.compare(password, user.hashed_password);
+    if (!match) {
+      securityLogger.warn(`Incorrect password attempt for user_id ${user.user_id}`, {
+        ip: req.ip,
+      });
+      return res.status(401).json({ error: 'Incorrect email or password' });
+    }
+
+    // 4) sign JWT
+    const token = jwt.sign(
+      { user_id: user.user_id, role_id: user.role_id },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+
+    logger.info(`Login success for user_id ${user.user_id}`);
+    return res.json({ token });
+
+  } catch (err) {
+    logger.error('login error', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 };

@@ -5,7 +5,6 @@ import { useUser } from '../context/UserContext';
 import '../styles/Login.css';
 
 const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-console.log('Login component mounting, API =', API);
 
 const Login = () => {
   const { login }      = useUser();
@@ -19,38 +18,35 @@ const Login = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    console.log('Login button clicked');  // <— debug
     setError('');
 
     try {
+      // 1) authenticate
       const res = await fetch(`${API}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      console.log('Login response status:', res.status);
+
       const data = await res.json();
       if (!res.ok || !data.token) {
-        console.error('Login error payload:', data);
-        return setError(data.message || data.error || 'Login failed');
+        return setError(data.error || 'Login failed');
       }
 
-      // fetch profile
+      // 2) fetch profile
       const profRes = await fetch(`${API}/api/users/me`, {
         headers: { Authorization: `Bearer ${data.token}` },
       });
       if (!profRes.ok) {
-        console.error('Profile fetch failed', await profRes.text());
         return setError('Could not fetch user profile');
       }
       const userObj = await profRes.json();
 
-      // finalize login
+      // 3) finish login in context & redirect
       login(data.token, userObj);
       navigate(from, { replace: true });
 
     } catch (err) {
-      console.error('Network/login exception', err);
       setError('Network error');
     }
   };
@@ -81,7 +77,7 @@ const Login = () => {
           />
         </div>
 
-        {/* This button MUST be type="submit" to trigger onSubmit */}
+        {/* This must be submit! */}
         <button type="submit" className="btn">
           Log In
         </button>
