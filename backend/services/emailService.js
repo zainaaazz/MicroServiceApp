@@ -41,4 +41,28 @@ Flexitec Bank
   });
 }
 
-module.exports = { sendCardStatusEmail };
+
+async function sendOtpEmail({ to, fullName, cardNum, code }) {
+  const last4 = cardNum.slice(-4);
+  const subject = `Your one-time code for card •••• ${last4}`;
+  const text = `
+Hello ${fullName},
+
+Your one-time code to view details of card ending in ${last4} is:
+
+    ${code}
+
+This code expires in 5 minutes. If you did not request this, please contact support.
+
+Thank you,
+Flexitec Bank
+`;
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject,
+    text
+  });
+}
+
+module.exports = { sendCardStatusEmail, sendOtpEmail };

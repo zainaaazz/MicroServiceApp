@@ -7,6 +7,10 @@ const {
   getCardById,
   updateCardStatus
 } = require('../controllers/cardController');
+const {
+  requestDetailsOtp,
+  verifyDetailsOtp
+} = require('../controllers/cardDetailController');
 const verifyToken      = require('../middleware/verifyToken');
 const authorizeRole    = require('../middleware/authorizeRole');
 
@@ -40,5 +44,35 @@ router.put(
   authorizeRole(BANKSTAFF),
   updateCardStatus
 );
+
+
+router.post(
+  '/:cardId/details/request',
+  verifyToken,
+  requestDetailsOtp
+);
+router.post(
+  '/:cardId/details/verify',
+  verifyToken,
+  verifyDetailsOtp
+);
+
+
+// Customer: request & verify one-time code to see full card details
+router.post(
+  '/:cardId/details/request',
+  verifyToken,
+  authorizeRole(CUSTOMER),
+  requestDetailsOtp
+);
+router.post(
+  '/:cardId/details/verify',
+  verifyToken,
+  authorizeRole(CUSTOMER),
+  verifyDetailsOtp
+);
+
+
+
 
 module.exports = router;
