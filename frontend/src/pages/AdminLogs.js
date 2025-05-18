@@ -14,6 +14,7 @@ const EVENT_TYPES = [
   { label: 'Incorrect Password',        value: 'Incorrect password' },
   { label: 'Unregistered Email',        value: 'unregistered email' },
   { label: 'Rate Limit Reached',        value: 'Rate limit exceeded' },
+  { label: 'Brute Force Attempt',        value: 'Brute' },
 ];
 
 export default function AdminLogs() {
